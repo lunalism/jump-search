@@ -5,11 +5,11 @@ import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react'; // 돋보기 아이콘
 
-interface SearchBarProps {
-  defaultQuery?: string; // 기본 검색어 props 유지
+interface SearchResultsSearchBarProps {
+  defaultQuery?: string; // 기본 검색어 props
 }
 
-export function SearchBar({ defaultQuery }: SearchBarProps) {
+export function SearchResultsSearchBar({ defaultQuery }: SearchResultsSearchBarProps) {
   const [query, setQuery] = useState(defaultQuery || ''); // 기본 검색어로 초기화
   const router = useRouter();
 
@@ -26,13 +26,13 @@ export function SearchBar({ defaultQuery }: SearchBarProps) {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         onKeyDown={handleSearch}
-        placeholder={defaultQuery ? '' : '검색어를 입력하세요 (예: 서울 맛집, IT 뉴스)...'}
-        className="w-full h-12 p-4 text-lg rounded-full focus-visible:ring-2 focus-visible:ring-blue-500 shadow-md transition-width duration-300 pr-10"
+        placeholder={defaultQuery ? '' : '검색어를 입력하세요...'}
+        className="w-full h-10 p-3 text-base rounded-full focus-visible:ring-2 focus-visible:ring-blue-500 shadow-md transition-width duration-300 pr-8"
         spellCheck={false}
       />
       <Search
-        className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer"
-        size={20}
+        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer"
+        size={16}
         aria-label="Search"
         onClick={() => {
           if (query.trim()) {

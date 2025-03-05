@@ -6,7 +6,7 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useRouter } from 'next/navigation';
 import { SearchResultsSearchBar } from './SearchResultsSearchBar'; // 검색 결과용 SearchBar 임포트
 
-export function Navbar() {
+export function SearchResultsNavbar({ query }: { query: string }) {
   const supabase = createClientComponentClient();
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
@@ -47,7 +47,7 @@ export function Navbar() {
     <nav className="w-full flex items-center justify-between">
       <h1 className="text-3xl font-bold text-gray-900" aria-label="Jump Home">Jump</h1> {/* 로고 왼쪽 */}
       <div className="flex-1 mx-4 max-w-md sm:w-full sm:mx-0"> {/* SearchBar 중간, 여백 추가, 반응형 */}
-        <SearchResultsSearchBar defaultQuery={typeof window !== 'undefined' && window.location.pathname.includes('/search') ? decodeURIComponent(window.location.pathname.split('/search/')[1]) : ''} />
+        <SearchResultsSearchBar defaultQuery={query} />
       </div>
       <div className="flex items-center gap-4">
         {user ? (
