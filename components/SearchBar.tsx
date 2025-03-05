@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { Search } from 'lucide-react';
 
 export function SearchBar() {
     // 검색어 상태 관리
@@ -12,32 +12,32 @@ export function SearchBar() {
     const router = useRouter();
 
     // 검색 폼 제출 이벤트 핸들러
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (query.trim()) {
-            // 검색어가 있으면 검색 결과 페이지로 이동
-            router.push(`/search/${encodeURIComponent(query)}`);
+    const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter' && query.trim()) {
+          router.push(`/search/${encodeURIComponent(query)}`);
         }
-    };
+      };
 
     return (
-        <form onSubmit={handleSubmit} className="w-full max-w-3xl mx-auto mb-8">
-          <div className="relative flex items-center">
+        <div className="w-full max-w-4xl mx-auto mb-8 sm:max-w-md md:max-w-2xl relative">
             <Input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="검색어를 입력하세요 (예: 서울 맛집, IT 뉴스)..."
-              className="w-full p-4 text-lg rounded-full focus-visible:ring-2 focus-visible:ring-blue-500 shadow-md"
-              spellCheck={false}
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={handleSearch} // Enter 키로 검색 트리거
+                placeholder="검색어를 입력하세요 (예: 서울 맛집, IT 뉴스)..."
+                className="w-[600px] h-12 p-4 text-lg rounded-full focus-visible:ring-2 focus-visible:ring-blue-500 shadow-md transition-width duration-300"
+                spellCheck={false}
             />
-            <Button
-              type="submit"
-              className="absolute right-2 top-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 p-3"
-            >
-              검색
-            </Button>
-          </div>
-        </form>
-      );
+            <Search
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer"
+                size={20}
+                onClick={() => {
+                    if (query.trim()) {
+                        router.push(`/search/${encodeURIComponent(query)}`);
+                    }
+                }}
+            />
+        </div>
+    );
 }
