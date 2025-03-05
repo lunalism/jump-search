@@ -26,11 +26,11 @@ export function SearchBar() {
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={handleSearch} // Enter 키로 검색 트리거
                 placeholder="검색어를 입력하세요 (예: 서울 맛집, IT 뉴스)..."
-                className="w-[600px] h-12 p-4 text-lg rounded-full focus-visible:ring-2 focus-visible:ring-blue-500 shadow-md transition-width duration-300"
+                className="w-[600px] h-12 p-4 text-lg rounded-full focus-visible:ring-2 focus-visible:ring-blue-500 shadow-md transition-width duration-300 pr-10 sm:pr-6 md:pr-10 sm:w-full md:w-[700px]"
                 spellCheck={false}
             />
             <Search
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer"
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer sm:right-2"
                 size={20}
                 onClick={() => {
                     if (query.trim()) {

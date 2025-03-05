@@ -11,7 +11,6 @@ export function Navbar() {
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    // 사용자 세션 확인
     const getSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       setUser(session?.user || null);
@@ -19,28 +18,35 @@ export function Navbar() {
 
     getSession();
 
-    // 세션 변경 감지 (실시간 업데이트)
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user || null);
     });
 
-    // 클린업
     return () => {
       authListener.subscription.unsubscribe();
     };
   }, [supabase]);
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    router.refresh(); // 페이지 새로고침
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error('Error signing out:', error.message);
+    } else {
+      setUser(null); // 사용자 상태 강제 갱신
+      router.push('/'); // 홈으로 리다이렉트
+      router.refresh(); // 페이지 새로고침
+    }
   };
 
   const handleLogin = () => {
-    router.push('/login'); // 로그인 페이지로 이동 (로그인 페이지 필요 시 추가)
+    router.push('/login');
   };
 
   return (
-    <nav className="w-full p-4 flex justify-end items-center gap-4">
+    
+    <nav className="w-full p-4 flex justify-between items-center gap-4 pr-10">
+      <h1 className="text-5xl font-bold mb-8 text-green-800">Jump</h1>
+      <div className="flex items-center gap-4">
       {user ? (
         <>
           <Button variant="ghost" onClick={() => router.push('/profile')}>
@@ -55,6 +61,7 @@ export function Navbar() {
           로그인
         </Button>
       )}
+      </div>
     </nav>
   );
 }

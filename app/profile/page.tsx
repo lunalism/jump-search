@@ -14,18 +14,36 @@ export default function Profile() {
     const getSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        router.push('/login'); // 비로그인 시 로그인 페이지로 리다이렉트
+        router.push('/login');
       } else {
         setUser(session.user);
       }
     };
 
     getSession();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!session) {
+        router.push('/login');
+      } else {
+        setUser(session.user);
+      }
+    });
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
   }, [supabase, router]);
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    router.push('/'); // 로그아웃 후 홈으로 이동
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error('Error signing out:', error.message);
+    } else {
+      setUser(null); // 사용자 상태 강제 갱신
+      router.push('/'); // 홈으로 리다이렉트
+      router.refresh(); // 페이지 새로고침
+    }
   };
 
   if (!user) return <div>Loading...</div>;

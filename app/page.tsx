@@ -15,13 +15,12 @@ export default async function Home() {
     <div className="min-h-screen flex flex-col items-center bg-white">
       <Navbar />
       <main className="flex-1 flex flex-col items-center justify-center p-4">
-        <h1 className="text-5xl font-bold mb-8 text-gray-900">Jump</h1>
         <SearchBar />
         <QuickLinks />
         <Recommendations userId={user?.id || null} />
       </main>
-      <footer className="w-full py-4 text-gray-600 text-center border-t">
-        © 2025 Jump. 모든 권리 보유.
+      <footer className="w-full py-4 text-gray-300 text-right pr-10">
+        © 2025 Jump. All rights reserved.
       </footer>
     </div>
   );

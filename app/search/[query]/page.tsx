@@ -13,7 +13,9 @@ export default async function SearchResults({ params }: { params: Promise<{ quer
   return (
     <div className="p-4 max-w-3xl mx-auto bg-white shadow-md rounded-lg">
       <h1 className="text-2xl font-bold mb-4 text-gray-800">검색 결과: {decodedQuery}</h1>
-      <SearchBar />
+      <div className="relative">
+        <SearchBar />
+      </div>
       {results.hits.length > 0 ? (
         <div className="mt-4">
           {results.hits.map((hit: any) => (
