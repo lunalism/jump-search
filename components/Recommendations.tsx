@@ -56,7 +56,7 @@ export function Recommendations({ userId }: { userId: string | null }) {
   }
 
   return (
-    <div className="mt-8 w-full max-w-3xl mx-auto">
+    <div className="mt-8 w-full max-w-3xl mx-auto" aria-label="Recommendations">
       <h2 className="text-lg font-semibold mb-4 text-gray-800">추천 검색어</h2>
       <ul className="flex flex-wrap gap-2">
         {recommendations.map((query, index) => (

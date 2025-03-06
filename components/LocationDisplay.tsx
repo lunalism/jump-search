@@ -7,13 +7,13 @@ export default function LocationDisplay() {
 
   return (
     <>
-      {location.loading && <p className="text-sm text-gray-500 ml-4">위치 정보를 가져오는 중...</p>}
+      {location.loading && <p className="text-xs text-gray-400 mr-2" aria-live="polite">위치 정보를 가져오는 중...</p>}
       {location.city && !location.error && !location.loading && (
-        <p className="text-sm text-gray-500 ml-4">현재 위치: {location.city}, {location.country}</p>
+        <p className="text-xs text-gray-400 mr-2" aria-live="polite">현재 위치: {location.city}, {location.country}</p>
       )}
       {location.error && !location.loading && (
-        <p className="text-sm text-red-500 ml-4">위치정보를 가져올 수 없습니다: {location.error}</p>
+        <p className="text-xs text-red-500 mr-2" aria-live="polite">위치 정보를 가져올 수 없습니다: {location.error}</p>
       )}
     </>
   );
-} 
+}

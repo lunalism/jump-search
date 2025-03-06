@@ -16,7 +16,7 @@ export function HomeSearchBar() {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto mb-12 sm:max-w-md md:max-w-2xl relative">
+    <div className="w-full max-w-4xl mx-auto mb-12 sm:max-w-md md:max-w-2xl relative" aria-label="Search Bar">
       <Input
         type="text"
         value={query}
