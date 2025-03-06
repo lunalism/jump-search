@@ -1,7 +1,7 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 
 interface SearchHit {
-  id: string | number;
+  id: string;
   title: string;
   description: string;
   url: string;
