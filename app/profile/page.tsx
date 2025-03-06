@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useRouter } from 'next/navigation';
-
+import { User } from '@supabase/supabase-js';
 export default function Profile() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const supabase = createClientComponentClient();
   const router = useRouter();
 

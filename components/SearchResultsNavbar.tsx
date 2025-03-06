@@ -5,11 +5,12 @@ import { Button } from '@/components/ui/button';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useRouter } from 'next/navigation';
 import { SearchResultsSearchBar } from './SearchResultsSearchBar'; // 검색 결과용 SearchBar 임포트
+import { User } from '@supabase/supabase-js';
 
 export function SearchResultsNavbar({ query }: { query: string }) {
   const supabase = createClientComponentClient();
   const router = useRouter();
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const getSession = async () => {

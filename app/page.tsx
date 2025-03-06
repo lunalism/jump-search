@@ -7,10 +7,11 @@ import { HomeNavbar } from '@/components/HomeNavbar';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useState, useEffect } from 'react';
 import LocationDisplay from '@/components/LocationDisplay';
+import { User } from '@supabase/supabase-js';
 
 export default function Home() {
   const supabase = createClientComponentClient(); // 클라이언트 컴포넌트에서 사용
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const getSession = async () => {

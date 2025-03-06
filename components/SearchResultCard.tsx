@@ -1,6 +1,13 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 
-export function SearchResultCard({ hit }: { hit: any }) {
+interface SearchHit {
+  id: string | number;
+  title: string;
+  description: string;
+  url: string;
+}
+
+export function SearchResultCard({ hit }: { hit: SearchHit }) {
   return (
     <Card className="mb-4 hover:shadow-lg transition-shadow">
       <CardHeader>

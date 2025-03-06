@@ -10,7 +10,8 @@ export async function GET(request: Request) {
         limit: 10,
         });
         return NextResponse.json({ hits: results.hits });
-    } catch (error) {
+    } catch (e: unknown) {
+        console.error('Search failed:', e);
         return NextResponse.json({ error: 'Search failed' }, { status: 500 });
     }
 }
