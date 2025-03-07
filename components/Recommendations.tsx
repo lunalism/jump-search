@@ -1,70 +1,82 @@
 'use client';
 
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { translations } from '@/lib/translations';
 
-export function Recommendations({ userId }: { userId: string | null }) {
-  const [recommendations, setRecommendations] = useState<string[]>([]);
+interface Recommendation {
+  id: string;
+  title: string;
+  description: string;
+  url: string;
+}
+
+type Locale = 'ko' | 'en' | 'ja' | 'zh' | 'fr' | 'de' | 'es' | 'it';
+
+interface RecommendationsProps {
+  userId: string | null;
+  locale: Locale;
+}
+
+export function Recommendations({ userId, locale }: RecommendationsProps) {
+  const [recommendation, setRecommendation] = useState<Recommendation[]>([]);
+  const t = translations[locale as Locale];
 
   useEffect(() => {
-    async function fetchRecommendations() {
-      if (!userId) return;
-
-      const threeDaysAgo = new Date();
-      threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
-      const { data, error } = await supabase
-        .from('search_history')
-        .select('query')
-        .eq('user_id', userId)
-        .gte('timestamp', threeDaysAgo.toISOString())
-        .order('timestamp', { ascending: false })
-        .limit(5);
-
-      if (error) {
-        console.error('Error fetching recommendations:', error);
+    const supabase = createClientComponentClient();
+    
+    const fetchRecommendations = async () => {
+      if (!userId) {
+        // 비로그인 사용자용 기본 추천
+        setRecommendation([
+          { id: '1', title: t.recommendations.items[0], description: t.recommendations.descriptions[0], url: '#' },
+          { id: '2', title: t.recommendations.items[1], description: t.recommendations.descriptions[1], url: '#' },
+          { id: '3', title: t.recommendations.items[2], description: t.recommendations.descriptions[2], url: '#' },
+        ]);
         return;
       }
 
-      const queryCount: { [key: string]: number } = {};
-      data.forEach((item) => {
-        queryCount[item.query] = (queryCount[item.query] || 0) + 1;
-      });
-      const sortedQueries = Object.entries(queryCount)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 5)
-        .map(([query]) => query);
-      setRecommendations(sortedQueries);
-    }
+      // 로그인 사용자용 추천 (예시, 실제 API 호출 필요)
+      const { data, error } = await supabase
+        .from('recommendations')
+        .select('id, title, description, url')
+        .eq('user_id', userId)
+        .limit(3);
+
+      if (error) {
+        console.error('Error fetching recommendations:', error);
+      } else {
+        setRecommendation(data as Recommendation[]);
+      }
+    };
 
     fetchRecommendations();
-  }, [userId]);
-
-  if (!userId) {
-    return (
-      <div className="mt-8 text-gray-500 text-center">
-        로그인 후 추천을 받으세요!
-      </div>
-    );
-  }
-
-  if (recommendations.length === 0) {
-    return (
-      <div className="mt-8 text-gray-500 text-center">
-        검색 기록이 없습니다.
-      </div>
-    );
-  }
+  }, [userId, locale, t]);
 
   return (
-    <div className="mt-8 w-full max-w-3xl mx-auto" aria-label="Recommendations">
-      <h2 className="text-lg font-semibold mb-4 text-gray-800">추천 검색어</h2>
-      <ul className="flex flex-wrap gap-2">
-        {recommendations.map((query, index) => (
-          <li key={index} className="bg-gray-100 px-4 py-2 rounded-full text-blue-500 hover:bg-gray-200 cursor-pointer">
-            <a href={`/search/${encodeURIComponent(query)}`}>{query}</a>
-          </li>
-        ))}
-      </ul>
+    <div className="w-full max-w-4xl mx-auto p-4">
+      <h2 className="text-2xl font-bold mb-4">{t.recommendations.title}</h2>
+      <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-3">
+        {recommendation.length > 0 ? (
+          recommendation.map((rec) => (
+            <Card key={rec.id} className="hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <CardTitle className="text-blue-600 hover:underline">
+                  <a href={rec.url} target="_blank" rel="noopener noreferrer" aria-label={`Visit ${rec.title}`}>
+                    {rec.title}
+                  </a>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-gray-700 line-clamp-2">{rec.description}</CardDescription>
+              </CardContent>
+            </Card>
+          ))
+        ) : (
+          <p className="text-gray-600 text-center">추천 항목이 없습니다.</p>
+        )}
+      </div>
     </div>
   );
 }

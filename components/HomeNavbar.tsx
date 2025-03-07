@@ -6,65 +6,34 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useRouter } from 'next/navigation';
 import { User } from '@supabase/supabase-js';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
+import { translations } from '@/lib/translations'; // translations 임포트
 
-// 번역 데이터 정의
-const translations = {
-  ko: {
-    profile: '프로필',
-    logout: '로그아웃',
-    login: '로그인',
-  },
-  en: {
-    profile: 'Profile',
-    logout: 'Logout',
-    login: 'Login',
-  },
-  ja: {
-    profile: 'プロフィール',
-    logout: 'ログアウト',
-    login: 'ログイン',
-  },
-  zh: {
-    profile: '个人资料',
-    logout: '退出登录',
-    login: '登录',
-  },
-  fr: {
-    profile: 'Profil',
-    logout: 'Déconnexion',
-    login: 'Connexion',
-  },
-  de: {
-    profile: 'Profil',
-    logout: 'Abmelden',
-    login: 'Anmelden',
-  },
-  es: {
-    profile: 'Perfil',
-    logout: 'Cerrar sesión',
-    login: 'Iniciar sesión',
-  },
-  it: {
-    profile: 'Profilo',
-    logout: 'Disconnessione',
-    login: 'Accesso',
-  },
-};
+type Locale = 'ko' | 'en' | 'ja' | 'zh' | 'fr' | 'de' | 'es' | 'it';
+// 컴포넌트 타입 정의
+interface HomeNavbarProps {
+  onLanguageChange: (locale: Locale) => void;
+}
 
-export function HomeNavbar() {
+// 컴포넌트 구현
+export function HomeNavbar({ onLanguageChange }: HomeNavbarProps) {
+  // supabase 인스턴스 생성
   const supabase = createClientComponentClient();
+  // 라우터 인스턴스 생성
   const router = useRouter();
+  // 사용자 상태 관리
   const [user, setUser] = useState<User | null>(null);
-  const [locale, setLocale] = useState('ko'); // 기본 언어: 한국어
+  // 언어 상태 관리
+  const [locale, setLocale] = useState<Locale>('ko'); // 기본 언어: 한국어
 
+  // 사용자 세션 가져오기
   useEffect(() => {
     const getSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       setUser(session?.user || null);
     };
-
+    // 세션 가져오기
     getSession();
-
+    // 인증 상태 변경 리스너 설정
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user || null);
     });
@@ -74,6 +43,7 @@ export function HomeNavbar() {
     };
   }, [supabase]);
 
+  // 로그아웃 처리
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
@@ -85,18 +55,27 @@ export function HomeNavbar() {
     }
   };
 
+  // 로그인 처리
   const handleLogin = () => {
     router.push('/login');
   };
 
-  const t = translations[locale]; // 현재 언어에 맞는 번역 선택
+  // 언어 변경 처리
+  const handleLocaleChange = (newLocale: string) => {
+    setLocale(newLocale as Locale);
+    onLanguageChange(newLocale as Locale); // 상위 컴포넌트에 언어 변경 전달
+  };
 
+  // 번역 데이터 가져오기
+  const t = translations[locale];
+
+  // 컴포넌트 렌더링
   return (
     <nav className="w-full flex items-center justify-between px-10 pt-4" aria-label="Jump Navigation">
       <h1 className="text-3xl font-bold text-gray-900" aria-label="Jump Home">Jump</h1>
       <div className="flex items-center gap-4">
-        <Select onValueChange={setLocale} defaultValue="ko">
-          <SelectTrigger className="w-[80px]">
+        <Select onValueChange={handleLocaleChange} defaultValue="ko">
+          <SelectTrigger className="w-[120px]">
             <SelectValue placeholder="언어" />
           </SelectTrigger>
           <SelectContent>

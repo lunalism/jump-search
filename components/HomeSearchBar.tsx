@@ -4,8 +4,15 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react'; // 돋보기 아이콘
+import { translations } from '@/lib/translations';
 
-export function HomeSearchBar() {
+type Locale = 'ko' | 'en' | 'ja' | 'zh' | 'fr' | 'de' | 'es' | 'it';
+
+interface HomeSearchBarProps {
+  locale: Locale;
+}
+
+export function HomeSearchBar({ locale }: HomeSearchBarProps) {
   const [query, setQuery] = useState('');
   const router = useRouter();
 
@@ -22,7 +29,7 @@ export function HomeSearchBar() {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         onKeyDown={handleSearch}
-        placeholder="검색어를 입력하세요 (예: 서울 맛집, IT 뉴스)..."
+        placeholder={translations[locale]?.inputPlaceholder || '검색어를 입력하세요...'}
         className="w-[900px] h-12 p-4 text-lg rounded-full focus-visible:ring-2 focus-visible:ring-blue-500 shadow-md transition-width duration-300 pr-10 sm:w-full md:w-[700px]"
         spellCheck={false}
       />

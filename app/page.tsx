@@ -8,13 +8,13 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useState, useEffect } from 'react';
 import LocationDisplay from '@/components/LocationDisplay';
 import { User } from '@supabase/supabase-js';
-import { useRouter, usePathname } from 'next/navigation';
+
+type Locale = 'ko' | 'en' | 'ja' | 'zh' | 'fr' | 'de' | 'es' | 'it';
 
 export default function Home() {
   const supabase = createClientComponentClient();
   const [user, setUser] = useState<User | null>(null);
-  const router = useRouter();
-  const pathname = usePathname();
+  const [locale, setLocale] = useState<Locale>('ko');
 
   useEffect(() => {
     const getSession = async () => {
@@ -33,22 +33,20 @@ export default function Home() {
     };
   }, [supabase]);
 
-  const changeLanguage = (locale: string) => {
-    const newPath = pathname ? pathname.replace(/\/[a-z]{2}\//, `/${locale}/`) : `/${locale}/`;
-    router.push(newPath);
-    router.refresh();
+  const handleLanguageChange = (newLocale: string) => {
+    setLocale(newLocale as Locale);
   };
 
   return (
     <div className="min-h-screen flex flex-col items-center bg-white" aria-label="Jump Home Page">
-      <HomeNavbar />
+      <HomeNavbar onLanguageChange={handleLanguageChange} />
       <main className="flex-1 w-full max-w-4xl mx-auto flex flex-col items-center justify-center p-4 sm:p-2 md:p-4">
-        <HomeSearchBar />
+        <HomeSearchBar locale={locale} />
         <div className="-mt-1">
-          <QuickLinks />
+          <QuickLinks locale={locale} />
         </div>
         <div className="-mt-1">
-          <Recommendations userId={user?.id || null} />
+          <Recommendations userId={user?.id || null} locale={locale} />
         </div>
       </main>
       <footer className="w-full py-4 text-gray-300 flex items-center justify-between pr-10">
